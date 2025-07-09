@@ -19,16 +19,14 @@ struct OnboardingScreen: View {
             switch onboardingRouter.step {
             case .welcome:
                 WelcomeScreen(loginViewModel: loginViewModel, onboardingRouter: onboardingRouter)
-            case .name:
-                NameScreen(onboardingViewModel: onboardingViewModel)
-            case .age:
-                AgeScreen()
             case .languageLevel:
                 LanguageLevelScreen()
+            case .interests:
+                InterestsScreen(onboardingViewModel: onboardingViewModel)
             case .languageGoal:
                 LanguageLevelScreen()
-            case .interests:
-                LanguageLevelScreen()
+            case .age:
+                AgeScreen(onboardingViewModel: onboardingViewModel)
             }
             
             if !(onboardingRouter.step == .welcome) {
@@ -113,25 +111,33 @@ struct OnboardingScreen: View {
     OnboardingScreen(loginViewModel: LoginViewModel(appleSignInManager: AppleSignInManager()), onboardingViewModel: OnboardingViewModel())
 }
 
-
-struct NameScreen: View {
+struct AgeScreen: View {
     @ObservedObject var onboardingViewModel: OnboardingViewModel
     var body: some View {
         VStack {
-            SDTextField(text: onboardingViewModel.name, title: "Isim")
+            SDDatePicker(selectedDate: $onboardingViewModel.birthDate)
         }
-        .padding(.horizontal)
-    }
-}
-
-struct AgeScreen: View {
-    var body: some View {
-        Text("How old are you?")
+        .padding()
     }
 }
 
 struct LanguageLevelScreen: View {
     var body: some View {
-        Text("Select your language level.")
+        VStack {
+            LanguageLevelListView()
+                .padding()
+        }
+    }
+}
+
+struct InterestsScreen: View {
+    
+    @ObservedObject var onboardingViewModel: OnboardingViewModel
+    
+    var body: some View {
+        VStack {
+            InterestsListView(onboardingViewModel: onboardingViewModel)
+        }
+        .padding()
     }
 }

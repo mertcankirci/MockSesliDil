@@ -27,7 +27,9 @@ class LoginViewModel: ObservableObject {
                 user = result
             }
         } catch(let error) {
-            self.errorMessage = error.localizedDescription
+            await MainActor.run {
+                self.errorMessage = error.localizedDescription
+            }
             throw error
         }
     }

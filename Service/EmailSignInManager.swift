@@ -27,7 +27,7 @@ class EmailSignInManager: EmailSignInManagable {
         let request = URLRequest(url: url)
         
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (_, _) = try await URLSession.shared.data(for: request)
             
         } catch(let error) {
             throw error

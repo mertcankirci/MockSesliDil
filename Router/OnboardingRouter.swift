@@ -10,11 +10,10 @@ import SwiftUI
 
 enum OnboardingStep: Int, CaseIterable {
     case welcome
-    case name
-    case age
     case languageLevel
     case languageGoal
     case interests
+    case age
     
     var next: OnboardingStep? {
         let all = Self.allCases
@@ -35,7 +34,7 @@ enum OnboardingStep: Int, CaseIterable {
 
 
 final class OnboardingRouter: ObservableObject {
-    @Published var step: OnboardingStep = .welcome
+    @Published var step: OnboardingStep = .languageLevel
     
     var hasNextStep: Bool {
         step.next != nil

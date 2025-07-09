@@ -17,7 +17,25 @@ enum LanguageLevel: String, CaseIterable, Identifiable {
     case c2 = "C2"
     
     var id: String { rawValue }
+    
+    var description: String {
+        switch self {
+        case .a1:
+            return "Beginner"
+        case .a2:
+            return "Elementary"
+        case .b1:
+            return "Intermediate"
+        case .b2:
+            return "Upper-Intermediate"
+        case .c1:
+            return "Advanced"
+        case .c2:
+            return "Proficient"
+        }
+    }
 }
+
 
 enum TargetLanguage: String, CaseIterable, Identifiable {
     case english = "İngilizce"
@@ -48,11 +66,65 @@ enum Interest: String, CaseIterable, Identifiable {
     case nature = "Doğa"
     
     var id: String { rawValue }
+    
+    var description: String {
+        switch self {
+        case .cooking:
+            return "Yemek ve mutfak kültürü"
+        case .sports:
+            return "Sporlar ve aktif yaşam"
+        case .history:
+            return "Tarih ve geçmiş olaylar"
+        case .technology:
+            return "Teknoloji ve dijital dünya"
+        case .art:
+            return "Sanat ve yaratıcılık"
+        case .nature:
+            return "Doğa ve çevre"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .cooking:
+            return "fork.knife"
+        case .sports:
+            return "sportscourt"
+        case .history:
+            return "book"
+        case .technology:
+            return "desktopcomputer"
+        case .art:
+            return "paintpalette"
+        case .nature:
+            return "leaf"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .cooking:
+            return .orange
+        case .sports:
+            return .blue
+        case .history:
+            return .brown
+        case .technology:
+            return .purple
+        case .art:
+            return .pink
+        case .nature:
+            return .green
+        }
+    }
 }
+
+
 
 
 final class OnboardingViewModel: ObservableObject {
     @Published var name: String = ""
+    @Published var birthDate: Date = Date()
     @Published var targetLanguage: TargetLanguage = .english
     @Published var languageLevel: LanguageLevel = .a1
     @Published var learningGoal: LearningGoal = .travel
@@ -67,16 +139,14 @@ final class OnboardingViewModel: ObservableObject {
         switch step {
         case .welcome:
             return
-        case .name:
-            title = "Ismini ogrenebilir miyim"
-        case .age:
-            title = "Kac yasindasin"
         case .languageLevel:
             title = "Ingilizcede hangi seviyedesin"
         case .languageGoal:
             title = "Hangi seviyeye ulasmayi hedefliyorsun"
         case .interests:
             title = "Ilgi alanlarin neler"
+        case .age:
+            title = "Kac yasindasin"
         }
         
         withAnimation {
@@ -96,6 +166,14 @@ final class OnboardingViewModel: ObservableObject {
         withAnimation {
             onboardingProgress = progress
         }
+    }
+    
+    func addInterest(_ interest: Interest) {
+        interests.insert(interest)
+    }
+    
+    func popInterest(_ interest: Interest) {
+        interests.remove(interest)
     }
 }
 
