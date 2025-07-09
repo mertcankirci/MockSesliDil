@@ -1,0 +1,63 @@
+//
+//  OnboardingRouter.swift
+//  MockSesliDil
+//
+//  Created by Mertcan Kırcı on 9.07.2025.
+//
+
+import Foundation
+import SwiftUI
+
+enum OnboardingStep: Int, CaseIterable {
+    case welcome
+    case name
+    case age
+    case languageLevel
+    case languageGoal
+    case interests
+    
+    var next: OnboardingStep? {
+        let all = Self.allCases
+        guard let index = all.firstIndex(of: self), index + 1 < all.count else { return nil }
+        return all[index + 1]
+    }
+    
+    var previous: OnboardingStep? {
+        let all = Self.allCases
+        guard let index = all.firstIndex(of: self), index > 0 else { return nil }
+        return all[index - 1]
+    }
+    
+    static var count: Int {
+        self.allCases.count
+    }
+}
+
+
+final class OnboardingRouter: ObservableObject {
+    @Published var step: OnboardingStep = .welcome
+    
+    var hasNextStep: Bool {
+        step.next != nil
+    }
+    
+    var hasPreviousStep: Bool {
+        step.previous != nil && step.previous != .welcome
+    }
+    
+    func nextStep() {
+        if let next = step.next {
+            withAnimation {
+                step = next
+            }
+        }
+    }
+    
+    func previousStep() {
+        if let previous = step.previous, previous != .welcome {
+            withAnimation {
+                step = previous
+            }
+        }
+    }
+}
