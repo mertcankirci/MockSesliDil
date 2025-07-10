@@ -10,7 +10,7 @@ import SwiftUI
 struct SDLanguageLevelCell: View {
     
     let languageLevel: LanguageLevel
-    @Binding var selectedLevel: LanguageLevel?
+    @Binding var selectedLevel: LanguageLevel
     
     private var isSelected: Bool {
         selectedLevel == languageLevel

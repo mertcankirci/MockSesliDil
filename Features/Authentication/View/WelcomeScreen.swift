@@ -14,6 +14,7 @@ struct WelcomeScreen: View {
     
     @ObservedObject var loginViewModel: LoginViewModel
     @ObservedObject var onboardingRouter: OnboardingRouter
+    @ObservedObject var onboardingViewModel: OnboardingViewModel
     
     var body: some View {
         
@@ -69,7 +70,10 @@ struct WelcomeScreen: View {
         Task {
             do {
                 try await loginViewModel.signInWithApple()
-                onboardingRouter.nextStep()
+                if let user = loginViewModel.user {
+                    onboardingViewModel.userId = user.userId
+                    onboardingRouter.nextStep()
+                }
             } catch {
                 //Present error function call.
             }
@@ -80,5 +84,5 @@ struct WelcomeScreen: View {
 
 #Preview {
     let appleSignInManager = AppleSignInManager()
-    WelcomeScreen(loginViewModel: LoginViewModel(appleSignInManager: appleSignInManager), onboardingRouter: OnboardingRouter())
+    WelcomeScreen(loginViewModel: LoginViewModel(appleSignInManager: appleSignInManager), onboardingRouter: OnboardingRouter(), onboardingViewModel: OnboardingViewModel(userId: "", apiService: APIService()))
 }

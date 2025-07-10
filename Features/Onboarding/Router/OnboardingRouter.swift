@@ -30,11 +30,17 @@ enum OnboardingStep: Int, CaseIterable {
     static var count: Int {
         self.allCases.count
     }
+    
+    var isLast: Bool {
+        let all = Self.allCases
+        let totalCount = all.count
+        guard let index = all.firstIndex(of: self) else { return false }
+        return totalCount - 1 == index
+    }
 }
 
-
 final class OnboardingRouter: ObservableObject {
-    @Published var step: OnboardingStep = .languageLevel
+    @Published var step: OnboardingStep = .welcome
     
     var hasNextStep: Bool {
         step.next != nil

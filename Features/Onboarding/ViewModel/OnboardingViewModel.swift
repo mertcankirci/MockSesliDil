@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum LanguageLevel: String, CaseIterable, Identifiable {
+enum LanguageLevel: String, Codable, CaseIterable, Identifiable {
     case a1 = "A1"
     case a2 = "A2"
     case b1 = "B1"
@@ -37,7 +37,7 @@ enum LanguageLevel: String, CaseIterable, Identifiable {
 }
 
 
-enum TargetLanguage: String, CaseIterable, Identifiable {
+enum TargetLanguage: String, Codable, CaseIterable, Identifiable {
     case english = "İngilizce"
     case spanish = "İspanyolca"
     case french = "Fransızca"
@@ -48,7 +48,7 @@ enum TargetLanguage: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-enum LearningGoal: String, CaseIterable, Identifiable {
+enum LearningGoal: String, Codable, CaseIterable, Identifiable {
     case travel = "Seyahat"
     case work = "İş"
     case exam = "Sınav Hazırlığı"
@@ -57,7 +57,7 @@ enum LearningGoal: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-enum Interest: String, CaseIterable, Identifiable {
+enum Interest: String, Codable, CaseIterable, Identifiable {
     case cooking = "Mutfak"
     case sports = "Spor"
     case history = "Tarih"
@@ -119,19 +119,18 @@ enum Interest: String, CaseIterable, Identifiable {
     }
 }
 
-
-
-
 final class OnboardingViewModel: ObservableObject {
-    @Published var name: String = ""
-    @Published var birthDate: Date = Date()
-    @Published var targetLanguage: TargetLanguage = .english
-    @Published var languageLevel: LanguageLevel = .a1
-    @Published var learningGoal: LearningGoal = .travel
-    @Published var interests: Set<Interest> = []
-    
     @Published var titleString: String = "Ismini ogrenebilir miyim"
     @Published var onboardingProgress: Float = 0.0
+    
+    var userId: String
+    let apiService: APIServicable
+    
+    init(userId: String, apiService: APIServicable) {
+        self.userId = userId
+        self.apiService = apiService
+    }
+    
     
     func getTitleString(for step: OnboardingStep) {
         var title = String()
@@ -168,12 +167,9 @@ final class OnboardingViewModel: ObservableObject {
         }
     }
     
-    func addInterest(_ interest: Interest) {
-        interests.insert(interest)
-    }
-    
-    func popInterest(_ interest: Interest) {
-        interests.remove(interest)
+    func completeOnboarding() {
+        //UserId: API'a istek atarken hangi user oldugunu anlamak icin
+        //Tercihlerini alip encodelayip gondermemiz lazim.
+        print("🔴🔴🔴🔴🔴🔴🔴USER ID ALDIM BURADAYIM ==== \(userId)")
     }
 }
-

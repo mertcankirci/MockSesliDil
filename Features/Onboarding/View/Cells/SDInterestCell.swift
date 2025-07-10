@@ -9,24 +9,28 @@ import SwiftUI
 
 struct SDInterestCell: View {
     
-    @ObservedObject var onboardingViewModel: OnboardingViewModel
+    @ObservedObject var userInfoViewModel: UserInfoViewModel
     
     let interest: Interest
     let iconName: String
     let iconColor: Color
     
-    @State private var isSelected: Bool = false
+    private var isSelected: Bool {
+        userInfoViewModel.userData.interests.contains(interest)
+    }
     
-    init(interest: Interest, onboardingViewModel: OnboardingViewModel) {
-         self.interest = interest
-         self.iconName = interest.icon
-         self.iconColor = interest.color
-         self._onboardingViewModel = ObservedObject(wrappedValue: onboardingViewModel)
-     }
+    init(interest: Interest, userInfoViewModel: UserInfoViewModel) {
+        self.interest = interest
+        self.iconName = interest.icon
+        self.iconColor = interest.color
+        self._userInfoViewModel = ObservedObject(wrappedValue: userInfoViewModel)
+    }
     
     var body: some View {
         Button {
-            handleButtonClick()
+            withAnimation {
+                handleButtonClick()
+            }
         } label: {
             HStack(spacing: 32) {
                 Image(systemName: iconName)
@@ -37,7 +41,6 @@ struct SDInterestCell: View {
                         Circle()
                             .fill(iconColor)
                     )
-                
                 
                 Text(interest.description)
                     .foregroundColor(.primary)
@@ -53,18 +56,14 @@ struct SDInterestCell: View {
     }
     
     private func handleButtonClick() {
-        withAnimation {
-            isSelected.toggle()
-        }
-        
         if isSelected {
-            onboardingViewModel.addInterest(interest)
+            userInfoViewModel.popInterest(interest)
         } else {
-            onboardingViewModel.popInterest(interest)
+            userInfoViewModel.addInterest(interest)
         }
     }
 }
 
 #Preview {
-    SDInterestCell(interest: .art, onboardingViewModel: OnboardingViewModel())
+    SDInterestCell(interest: .art, userInfoViewModel: UserInfoViewModel())
 }

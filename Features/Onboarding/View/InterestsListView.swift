@@ -9,18 +9,19 @@ import SwiftUI
 
 struct InterestsListView: View {
     
-    @ObservedObject var onboardingViewModel: OnboardingViewModel
+    @ObservedObject var userInfoViewModel: UserInfoViewModel
     let interests: [Interest] = Interest.allCases
     
     var body: some View {
         VStack {
             ForEach(interests) { interest in
-                SDInterestCell(interest: interest, onboardingViewModel: onboardingViewModel)
+                SDInterestCell(interest: interest, userInfoViewModel: userInfoViewModel)
+                
             }
         }
     }
 }
 
 #Preview {
-    InterestsListView(onboardingViewModel: OnboardingViewModel())
+    InterestsListView(userInfoViewModel: UserInfoViewModel())
 }

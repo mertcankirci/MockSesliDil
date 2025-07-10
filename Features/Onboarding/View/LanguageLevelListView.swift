@@ -10,7 +10,7 @@ import SwiftUI
 struct LanguageLevelListView: View {
     
     let levels: [LanguageLevel] = LanguageLevel.allCases
-    @State private var selectedLevel: LanguageLevel? = nil 
+    @Binding var selectedLevel: LanguageLevel
     
     var body: some View {
         VStack {
@@ -26,5 +26,5 @@ struct LanguageLevelListView: View {
 
 
 #Preview {
-    LanguageLevelListView()
+    LanguageLevelListView(selectedLevel: .constant(.a1))
 }

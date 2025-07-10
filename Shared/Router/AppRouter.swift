@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum AppRoute {
     case onboarding
@@ -15,4 +16,13 @@ enum AppRoute {
 
 final class AppRouter: ObservableObject {
     @Published var currentRoute: AppRoute = .onboarding
+    
+    func switchToMainTabs() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            withAnimation {
+                self.currentRoute = .mainTabs
+            }
+        }
+    }
 }

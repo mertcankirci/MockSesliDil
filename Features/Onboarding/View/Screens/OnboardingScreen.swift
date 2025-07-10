@@ -13,20 +13,21 @@ struct OnboardingScreen: View {
     @EnvironmentObject private var appRouter: AppRouter
     @ObservedObject var loginViewModel: LoginViewModel
     @ObservedObject var onboardingViewModel: OnboardingViewModel
+    @ObservedObject var userInfoViewModel: UserInfoViewModel
     
     var body: some View {
         ZStack {
             switch onboardingRouter.step {
             case .welcome:
-                WelcomeScreen(loginViewModel: loginViewModel, onboardingRouter: onboardingRouter)
+                WelcomeScreen(loginViewModel: loginViewModel, onboardingRouter: onboardingRouter, onboardingViewModel: onboardingViewModel)
             case .languageLevel:
-                LanguageLevelScreen()
+                LanguageLevelScreen(userInfoViewModel: userInfoViewModel)
             case .interests:
-                InterestsScreen(onboardingViewModel: onboardingViewModel)
+                InterestsScreen(userInfoViewModel: userInfoViewModel)
             case .languageGoal:
-                LanguageLevelScreen()
+                LanguageLevelScreen(userInfoViewModel: userInfoViewModel)
             case .age:
-                AgeScreen(onboardingViewModel: onboardingViewModel)
+                AgeScreen(userInfoViewModel: userInfoViewModel)
             }
             
             if !(onboardingRouter.step == .welcome) {
@@ -73,27 +74,30 @@ struct OnboardingScreen: View {
                     
                     Spacer()
                     
-                    if onboardingRouter.hasNextStep {
-                        Button {
+                    Button {
+                        if !onboardingRouter.step.isLast {
                             onboardingRouter.nextStep()
-                        } label: {
-                            Text("Next")
-                                .foregroundStyle(.black)
-                                .font(.system(size: 18, weight: .semibold, design: .default))
-                                .frame(width: 120, height: 50)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 32)
-                                        .fill(.orange)
-                                )
+                        } else {
+                            onboardingViewModel.completeOnboarding()
+                            appRouter.switchToMainTabs()
                         }
+                    } label: {
+                        Text(onboardingRouter.step.isLast ? "Finish" :"Next")
+                            .foregroundStyle(.black)
+                            .font(.system(size: 18, weight: .semibold, design: .default))
+                            .frame(width: 120, height: 50)
+                            .background(
+                                RoundedRectangle(cornerRadius: 32)
+                                    .fill(onboardingRouter.step.isLast ? .green.opacity(0.6) : .orange)
+                            )
                     }
                 }
-
             }
             .padding(.bottom, 16)
+            
             ProgressView(value: onboardingViewModel.onboardingProgress)
                 .tint(.orange)
-                .padding(.bottom, 80)
+                .padding(.bottom, 64)
         }
     }
     
@@ -108,23 +112,26 @@ struct OnboardingScreen: View {
 }
 
 #Preview {
-    OnboardingScreen(loginViewModel: LoginViewModel(appleSignInManager: AppleSignInManager()), onboardingViewModel: OnboardingViewModel())
+    OnboardingScreen(loginViewModel: LoginViewModel(appleSignInManager: AppleSignInManager()), onboardingViewModel: OnboardingViewModel(userId: "", apiService: APIService()), userInfoViewModel: UserInfoViewModel())
 }
 
 struct AgeScreen: View {
-    @ObservedObject var onboardingViewModel: OnboardingViewModel
+    @ObservedObject var userInfoViewModel: UserInfoViewModel
     var body: some View {
         VStack {
-            SDDatePicker(selectedDate: $onboardingViewModel.birthDate)
+            SDDatePicker(selectedDate: $userInfoViewModel.userData.birthDate)
         }
         .padding()
     }
 }
 
 struct LanguageLevelScreen: View {
+    
+    @ObservedObject var userInfoViewModel: UserInfoViewModel
+    
     var body: some View {
         VStack {
-            LanguageLevelListView()
+            LanguageLevelListView(selectedLevel: $userInfoViewModel.userData.languageLevel)
                 .padding()
         }
     }
@@ -132,11 +139,11 @@ struct LanguageLevelScreen: View {
 
 struct InterestsScreen: View {
     
-    @ObservedObject var onboardingViewModel: OnboardingViewModel
+    @ObservedObject var userInfoViewModel: UserInfoViewModel
     
     var body: some View {
         VStack {
-            InterestsListView(onboardingViewModel: onboardingViewModel)
+            InterestsListView(userInfoViewModel: userInfoViewModel)
         }
         .padding()
     }
